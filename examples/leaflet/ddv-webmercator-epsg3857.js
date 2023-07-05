@@ -19,6 +19,8 @@
  */
 
 window.onload = function () {
+  const endpoint = 'http://localhost:8081';
+
   var map = L.map('map', {
     center: [34.156113,-118.13194],
     zoom: 10,
@@ -39,10 +41,41 @@ window.onload = function () {
     'tiles/WebMercatorQuad/{z}/{x}/{y}.png?assets=B07&assets=B05&assets=B04&'+
     'color_formula=Gamma+RGB+3.5+Saturation+1.7+Sigmoidal+RGB+15+0.35';
 
-  var layer = L.tileLayer(titilerTemplate, {
-    searchid:'c42fec83ebd93a1d8ef3d826133fe597',
-  });
+  searchRequest = {
+    "collections": ["C2021957295-LPCLOUD.local.1x1"],
+    "bbox": [-180,-90,180,90],
+    "datetime": `2021-01-01/2021-01-30`,
+    "filter-lang": "cql-json",
+  }
+  // register mosaic query
+  fetch(`${endpoint}/mosaic/register`, {
+    method:'POST',
+    body: JSON.stringify(searchRequest),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  })
+  .then(function (response) {
+    return response.json()
+  })
+  .then(function (json) {
+    searchid = json.searchid
 
-  map.addLayer(layer);
+    var layer = L.tileLayer(titilerTemplate, {
+      searchid: searchid,
+      // Prevent Leaflet from retrieving non-existent tiles on the borders.
+      bounds: [
+        [-89.9999, -179.9999],
+        [89.9999, 179.9999]
+      ],
+      attribution:
+        '<a href="https://wiki.earthdata.nasa.gov/display/GIBS">' +
+        'NASA EOSDIS GIBS</a>&nbsp;&nbsp;&nbsp;' +
+        '<a href="https://github.com/nasa-gibs/web-examples/blob/main/examples/leaflet/ddv-webmercator-epsg3857.js">' +
+        'View Source' +
+        '</a>'
+    });
+    map.addLayer(layer);
+  })
 
 };
