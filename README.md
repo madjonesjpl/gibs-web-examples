@@ -53,6 +53,21 @@ npm run dev
 
 Navigate your browser to http://localhost:3001.
 
+## Dynamic Data Visualization Examples
+In order to run the DDV examples (one for openlayers, two for leaflet), a connection must be created to the Titiler server, and to a pgstac STAC database. To spin up the necessary docker containers, clone the [Titiler.PgStac repository](https://github.com/stac-utils/titiler-pgstac) and follow the installation instructions detailed on the README. The two containers of importance are the database (container named stac-db) and the tiler (tiler-pgstac).
+### Installation
+I downloaded test data to my local machine, and added the file path to the folder storing all data as a volume of the tiler container (found in the repo's docker.yml configuration file). I then used xxx.sh and xxx.sh (link repo?) to modify the data so it was in the correct format, and in the collection structure required by Titiler.
+
+*Add instructions once Zhangshi finishes setting up Titiler instance in AWS*
+### Launch
+
+    $ docker-compose up --build database
+In a separate terminal window, run:
+
+    $ docker-compose up --build tiler
+Connection should now be available at port 8081. Navigate to http://localhost:3001 as normal while the containers are running
+
+
 Most examples show a single layer. Visit the
 [GIBS Visualization Product Catalog](https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/#visualization-product-catalog)
 for parameters needed to display other layers.
