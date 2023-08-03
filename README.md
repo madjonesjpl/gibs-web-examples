@@ -53,21 +53,6 @@ npm run dev
 
 Navigate your browser to http://localhost:3001.
 
-## Dynamic Data Visualization Examples
-In order to run the DDV examples (one for openlayers, two for leaflet), a connection must be created to the Titiler server, and to a pgstac STAC database. To spin up the necessary docker containers, clone the [Titiler.PgStac repository](https://github.com/stac-utils/titiler-pgstac) and follow the installation instructions detailed on the README. The two containers of importance are the database (container named stac-db) and the tiler (tiler-pgstac).
-### Installation
-I downloaded test data to my local machine, and added the file path to the folder storing all data as a volume of the tiler container (found in the repo's docker.yml configuration file). I then used xxx.sh and xxx.sh (link repo?) to modify the data so it was in the correct format, and in the collection structure required by Titiler.
-
-*Add instructions once Zhangshi finishes setting up Titiler instance in AWS*
-### Launch
-
-    $ docker-compose up --build database
-In a separate terminal window, run:
-
-    $ docker-compose up --build tiler
-Connection should now be available at port 8081. Navigate to http://localhost:3001 as normal while the containers are running
-
-
 Most examples show a single layer. Visit the
 [GIBS Visualization Product Catalog](https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/#visualization-product-catalog)
 for parameters needed to display other layers.
@@ -142,6 +127,29 @@ This example uses the [Google Maps API](https://developers.google.com/maps/docum
 
 Google Maps requires an API key.
 The key should be inserted [here](./examples/google/webmercator-epsg3857.html#L30)
+
+## Dynamic Data Visualization Examples
+In order to run the DDV examples (one for openlayers, two for leaflet), a connection must be created to the Titiler server, and to a pgstac STAC database. To spin up the necessary docker containers, clone the [Titiler.PgStac repository](https://github.com/stac-utils/titiler-pgstac) and follow the installation instructions detailed on the README. The two containers of importance are the database (container named stac-db) and the tiler (tiler-pgstac).
+
+To download and prepare the data necessary to demonstrate this wrapper, download [this](https://git.earthdata.nasa.gov/projects/VISLABS/repos/titiler-pgstac-demo/browse/ingest/1x1) repository, and follow the instructions documented in the titiler-pgstac-demo/ingest/1x1 README.md.
+
+After the data has been downloaded, open the docker-compose.yml file in the root of the Titiler-PgSTAC repository. The first service should be the 'tiler' container, and there should only be one entry in *volumes*, './benchmark:/tmp/benchmark'. Add another entry, the path to the 'lp-prod-protected' folder of data you just downloaded and modified, followed by ':/data/lp-prod-protected'. So the full *volumes* object for the tiler service should look like this:
+
+    volumes:
+		- ./benchmark:/tmp/benchmark
+		- /{path-to-lp-prod-protected}/lp-prod-protected:/data/lp-prod-protected
+
+To run the Wrapper examples, see the [WMTS Wrapper repository](https://git.earthdata.nasa.gov/projects/VISLABS/repos/ddv-api-wmts-wrapper/browse).
+### Launch
+After saving and closing the docker-compose.yml file, run the following commands in your terminal:
+    $ docker-compose up --build database
+In a separate terminal window, run:
+
+    $ docker-compose up --build tiler
+Connection should now be available at port 8081. Navigate to http://localhost:3001 as normal while the containers are running
+
+*Note: If you wish to run the OpenLayers Dynamic Data Visualization Wrapper example, you must download the [wrapper repository](https://git.earthdata.nasa.gov/projects/VISLABS/repos/ddv-api-wmts-wrapper/browse) and follow the instructions detailed in its README.md*
+
 
 ## Questions
 
